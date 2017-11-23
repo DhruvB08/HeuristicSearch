@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="827.0" prefWidth="1167.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+   <children>
+      <Pane layoutX="14.0" layoutY="14.0" prefHeight="804.0" prefWidth="806.0" style="-fx-background-color: white;" />
+      <Button layoutX="842.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&lt;" />
+      <TextField layoutX="894.0" layoutY="28.0" prefHeight="25.0" prefWidth="88.0" />
+      <Button layoutX="989.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Go" />
+      <Button layoutX="1088.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&gt;" />
+      <Text layoutX="842.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search Algorithm:" wrappingWidth="175.271484375">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Text>
+      <MenuButton layoutX="842.0" layoutY="110.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+        </items>
+      </MenuButton>
+      <Text layoutX="837.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heuristic:">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Text>
+      <Text layoutX="842.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="w1:" />
+      <TextField layoutX="864.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
+      <Text layoutX="949.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="w2:" />
+      <TextField layoutX="972.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
+      <MenuButton layoutX="839.0" layoutY="244.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+        </items>
+      </MenuButton>
+      <Button layoutX="842.0" layoutY="295.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="88.0" text="Find Solution" />
+      <TextArea layoutX="938.0" layoutY="295.0" prefHeight="169.0" prefWidth="220.0" />
+      <Text layoutX="840.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="x co-ord:" />
+      <Text layoutX="840.0" layoutY="534.0" strokeType="OUTSIDE" strokeWidth="0.0" text="y co-ord:" />
+      <TextField layoutX="898.0" layoutY="492.0" prefHeight="25.0" prefWidth="48.0" />
+      <TextField layoutX="898.0" layoutY="517.0" prefHeight="25.0" prefWidth="48.0" />
+      <Button layoutX="850.0" layoutY="548.0" mnemonicParsing="false" text="Get Cell Info" />
+      <Text layoutX="975.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="g-value:" />
+      <Text layoutX="975.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="h-value:" />
+      <Text layoutX="978.0" layoutY="565.0" strokeType="OUTSIDE" strokeWidth="0.0" text="f-value:" />
+      <TextField editable="false" layoutX="1033.0" layoutY="492.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField editable="false" layoutX="1033.0" layoutY="520.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField editable="false" layoutX="1033.0" layoutY="548.0" prefHeight="25.0" prefWidth="105.0" />
+      <Button layoutX="838.0" layoutY="628.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0" text="Generate Puzzles" />
+      <Button layoutX="838.0" layoutY="665.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0" text="Get Statistics" />
+      <Button layoutX="838.0" layoutY="700.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Import from file" />
+      <Button layoutX="838.0" layoutY="735.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Export to file" />
+      <Text layoutX="975.0" layoutY="717.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" />
+      <TextField layoutX="1033.0" layoutY="700.0" prefHeight="25.0" prefWidth="113.0" />
+      <Text layoutX="975.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" />
+      <TextField layoutX="1033.0" layoutY="735.0" prefHeight="25.0" prefWidth="113.0" />
+   </children>
+</AnchorPane>
