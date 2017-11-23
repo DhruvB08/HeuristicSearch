@@ -40,6 +40,7 @@ public class MainController {
 			//for loop from 0 -> 10
 				//assign start/end cells
 				//array[i*10 + j] = this grid
+				//add grid to pane
 		//set current grid to index 0 (make call to private method)
 	
 	//onclick for export puzzle

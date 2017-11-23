@@ -1,12 +1,38 @@
 package grids;
 
+import java.util.Random;
+
+import grids.Cell.CellType;
+import javafx.scene.shape.Rectangle;
+
 public class Grid {
 
 	//dimensions are 160 columns by 120 rows
+	public static final int COLUMNS = 160;
+	public static final int ROWS = 120;
+	public Cell[][] grid;
+	public Cell[] hardCenters;
 	
 	//grid constructor using height/width
+	public Grid() {
+		grid = createGrid();
+	}
 	
 	//create whole grid method
+	public Cell[][] createGrid() {
+		Cell[][] grid = new Cell[ROWS][COLUMNS];
+		
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMNS; j++) {
+				grid[i][j] = new Cell(i, j);
+				grid[i][j].rect = new Rectangle(10, 10);
+				grid[i][j].rect.setX(i * 10);
+				grid[i][j].rect.setY(j * 10);
+			}
+		}
+		
+		return grid;
+	}
 	
 	//create hard cells method
 	/*
@@ -14,6 +40,27 @@ public class Grid {
 	For each coordinate pair (rnd, yrnd), consider the 31x31 region centered at this coordinate pair. 
 	For every cell inside this region, choose with probability 50% to mark it as a hard to traverse cell
 	*/
+	public void addHardCells() {
+		hardCenters = new Cell[8];
+		Random random = new Random();
+		
+		for (int i = 0; i < 8; i++) {
+			int x = random.nextInt(ROWS);
+			int y = random.nextInt(COLUMNS);
+			hardCenters[i] = grid[x][y];
+			
+			for (int j = -15; j < 16; j++) {
+				for (int k = - 15; k < 16; k++) {
+					int x2 = Math.min(Math.max(0, x + j), ROWS - 1);
+					int y2 = Math.min(Math.max(0, y + k), COLUMNS - 1);
+					
+					if (random.nextBoolean()) {
+						grid[x2][y2].convertTo(CellType.HARD);
+					}
+				}
+			}
+		}
+	}
 	
 	//create highways method
 	/*
@@ -30,6 +77,63 @@ public class Grid {
 	  If the length of the path is less than 100 cells when you hit the boundary, then reject the path and start the process again
 	  If you cannot add a highway given the placement of the previous rivers, start the process from the beginning
 	 */
+	public boolean addRivers() {
+		int MAXTRIES = 15;
+		int FAILS = 0;
+		
+		for (int j = 0; j < 4; j++) {
+			if (!addRiver()) {
+				FAILS++;
+				j--;
+			}
+			
+			if (FAILS >= MAXTRIES) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	//add one whole river
+	private boolean addRiver() {
+		int riverLength = 0;
+		Cell start = randomBoundaryCell();
+		String firstDir = randomDirection();
+	}
+	
+	//pick a random cell on the boundary
+	private Cell randomBoundaryCell() {
+		Random random = new Random();
+		
+		int x = 0;
+		if (random.nextBoolean()) {
+			x = ROWS - 1;
+		}
+		
+		int y = 0;
+		if (random.nextBoolean()) {
+			y = COLUMNS - 1;
+		}
+		
+		return grid[x][y];
+	}
+	
+	private String randomDirection() {
+		Random random = new Random();
+		int choice = random.nextInt(4);
+		
+		if (choice == 0) {
+			return "RIGHT";
+		}
+		else if (choice == 1) {
+			return "LEFT";
+		}
+		else if (choice == 2) {
+			return "UP";
+		}
+		return "DOWN";
+	}
 	
 	//create blocked cells method
 	/*
@@ -67,6 +171,20 @@ public class Grid {
 	 */
 	
 	//display grid onto screen
+	public void showGrid() {
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMNS; j++) {
+				grid[i][j].showCell();
+			}
+		}
+	}
 	
 	//hide grid from screen
+	public void hideGrid() {
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMNS; j++) {
+				grid[i][j].rect.setVisible(false);
+			}
+		}
+	}
 }
