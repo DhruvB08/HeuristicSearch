@@ -116,7 +116,7 @@ public class MainController {
 	//onclicks for each menuitem to select search algorithm
 		//looks at text in textbox for weight
 	public void setUniform(ActionEvent event) {
-		searchAlgo = new UniformCost();
+		searchAlgo = new UniformCost(searchAlgo.heuristic);
 		searchAlgoMenu.setText("Uniform Cost");
 	}
 	
@@ -215,6 +215,7 @@ public class MainController {
 		}
 		
 		searchAlgo = tempSolver;
+		searchAlgo.heuristic = Heuristic.MINDISTANCE;
 		displayGrid(0);
 	}
 	

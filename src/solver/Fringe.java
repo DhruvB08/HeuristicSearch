@@ -103,12 +103,8 @@ public class Fringe {
 		int min;
 		Cell temp;
 		
-		if (rightChild > heapSize || leftChild > heapSize) {
-			return;
-		}
-		
-		if (rightChild >= heapSize) {
-			if (leftChild >= heapSize) {
+		if (rightChild > heapSize) {
+			if (leftChild > heapSize) {
 				return;
 			}
 			else {

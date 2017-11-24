@@ -4,13 +4,10 @@ import java.util.ArrayList;
 
 import grids.Cell;
 
-public class UniformCost extends AbstractHeuristic {
+public class UniformCost extends AStar {
 
-	@Override
-	public ArrayList<Cell> solve(Cell start, Cell end) {
-		WeightedAStar solver = new WeightedAStar(0, Heuristic.AVOIDHARD);
-		solver.grid = grid;
-		return solver.solve(start, end);
+	public UniformCost(Heuristic h) {
+		super(h);
+		weight1 = 0;
 	}
-
 }
