@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 public class Cell {
 	int x, y;
 	CellType type;
-	Rectangle rect;			//create 1px black border on each rectangle
+	public Rectangle rect;			//create 1px black border on each rectangle
 	float[] gvals;
 	float[] fvals;
 	Cell[] parents;
@@ -30,6 +30,16 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 		this.convertTo(type);
+	}
+	
+	public Cell(Cell other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.convertTo(other.type);
+		this.rect = new Rectangle(10, 10);
+		this.rect.setFill(other.rect.getFill());
+		this.rect.setX(other.rect.getX());
+		this.rect.setY(other.rect.getY());
 	}
 	
 	public void convertTo(CellType other) {

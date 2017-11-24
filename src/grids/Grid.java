@@ -16,7 +16,7 @@ public class Grid {
 	public Cell[] hardCenters;
 	public List<List<Cell>> rivers;
 	
-	//grid constructor using height/width
+	//blank grid constructor, wont add start/end cells
 	public Grid() {
 		grid = createGrid();
 		addHardCells();
@@ -27,6 +27,49 @@ public class Grid {
 		}
 		
 		addBlockedCells();
+	}
+	
+	//grid constructor using grid
+	public Grid(Grid other) {
+		grid = copyGrid(other.grid);
+		hardCenters = hardCenters(other.hardCenters);
+		rivers = copyRivers(other.rivers);
+		this.addStartEnd();
+	}
+	
+	//make a copy of the rivers
+	private List<List<Cell>> copyRivers(List<List<Cell>> other) {
+		List<List<Cell>> copy = new ArrayList<List<Cell>>();
+		
+		for (int i = 0; i < other.size(); i++) {
+			copy.add(new ArrayList<Cell>(other.get(i)));
+		}
+		
+		return copy;
+	}
+	
+	//create copy of centers
+	private Cell[] hardCenters(Cell[] other) {
+		Cell[] copy = new Cell[other.length];
+		
+		for (int i = 0; i < copy.length; i++) {
+			copy[i] = new Cell(other[i]);
+		}
+		
+		return copy;
+	}
+	
+	//create another grid and return it
+	private Cell[][] copyGrid(Cell[][] copy) {
+		Cell[][] res = new Cell[copy.length][copy[0].length];
+		
+		for (int i = 0; i < res.length; i++) {
+			for (int j = 0; j < res[0].length; j++) {
+				res[i][j] = new Cell(copy[i][j]);
+			}
+		}
+		
+		return res;
 	}
 	
 	//create whole grid method
@@ -468,9 +511,5 @@ public class Grid {
 				grid[i][j].rect.setVisible(false);
 			}
 		}
-	}
-	public static void main(String[] args){
-		Grid testing = new Grid();
-		boolean test = testing.addRivers();
 	}
 }

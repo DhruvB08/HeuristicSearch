@@ -9,9 +9,8 @@
 
 <AnchorPane prefHeight="827.0" prefWidth="1167.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <Pane layoutX="14.0" layoutY="14.0" prefHeight="804.0" prefWidth="806.0" style="-fx-background-color: white;" />
       <Button layoutX="842.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&lt;" />
-      <TextField layoutX="894.0" layoutY="28.0" prefHeight="25.0" prefWidth="88.0" />
+      <TextField fx:id="gridIndex" layoutX="894.0" layoutY="28.0" prefHeight="25.0" prefWidth="88.0" />
       <Button layoutX="989.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Go" />
       <Button layoutX="1088.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&gt;" />
       <Text layoutX="842.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search Algorithm:" wrappingWidth="175.271484375">
@@ -58,7 +57,7 @@
       <TextField editable="false" layoutX="1033.0" layoutY="492.0" prefHeight="25.0" prefWidth="105.0" />
       <TextField editable="false" layoutX="1033.0" layoutY="520.0" prefHeight="25.0" prefWidth="105.0" />
       <TextField editable="false" layoutX="1033.0" layoutY="548.0" prefHeight="25.0" prefWidth="105.0" />
-      <Button layoutX="838.0" layoutY="628.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0" text="Generate Puzzles" />
+      <Button layoutX="838.0" layoutY="628.0" mnemonicParsing="false" onAction="#genPuzzles" prefHeight="25.0" prefWidth="147.0" text="Generate Puzzles" />
       <Button layoutX="838.0" layoutY="665.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0" text="Get Statistics" />
       <Button layoutX="838.0" layoutY="700.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Import from file" />
       <Button layoutX="838.0" layoutY="735.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Export to file" />
@@ -66,5 +65,10 @@
       <TextField layoutX="1033.0" layoutY="700.0" prefHeight="25.0" prefWidth="113.0" />
       <Text layoutX="975.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" />
       <TextField layoutX="1033.0" layoutY="735.0" prefHeight="25.0" prefWidth="113.0" />
+      <ScrollPane fx:id="gridPane" layoutX="14.0" layoutY="14.0" prefHeight="804.0" prefWidth="808.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

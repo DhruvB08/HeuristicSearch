@@ -1,10 +1,22 @@
 package application;
 
+import grids.Grid;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import solver.AbstractHeuristic;
+
 public class MainController {
 
-	//array of 50 grids
-	//currently displayed grid
-	//current search algorithm (use abstract class for this)
+	Grid[] grids;					//array of 50 grids
+	Grid currGrid;					//currently displayed grid
+	AbstractHeuristic searchAlgo;	//current search algorithm (use abstract class for this)
+	
+	@FXML Pane gridPaneView;
+	@FXML ScrollPane gridPane;
+	@FXML TextField gridIndex;
 	
 	//onclick for previous grid
 	
@@ -18,6 +30,24 @@ public class MainController {
 		//show grid
 		//show index in textbox
 		//clear textareas for solution/cell info
+	private void displayGrid(int index) {
+		if (currGrid != null) {
+			currGrid.hideGrid();
+		}
+		
+		currGrid = grids[index];
+		gridPaneView = new Pane();
+		
+		for (int i = 0; i < currGrid.grid.length; i++) {
+			for (int j = 0; j < currGrid.grid[0].length; j++) {
+				gridPaneView.getChildren().add(currGrid.grid[i][j].rect);
+			}
+		}
+		
+		currGrid.showGrid();
+		gridIndex.setText(Integer.toString(index));
+		gridPane.setContent(gridPaneView);;
+	}
 	
 	//onclicks for each menuitem to select search algorithm
 		//looks at text in textbox for weight
@@ -42,6 +72,19 @@ public class MainController {
 				//array[i*10 + j] = this grid
 				//add grid to pane
 		//set current grid to index 0 (make call to private method)
+	public void genPuzzles(ActionEvent event) {
+		grids = new Grid[50];
+		
+		for (int i = 0; i < 5; i++) {
+			Grid temp = new Grid();
+			
+			for (int j = 0; j < 10; j++) {
+				grids[i * 10 + j] = new Grid(temp);
+			}
+		}
+		
+		displayGrid(0);
+	}
 	
 	//onclick for export puzzle
 		//finds filename from associated textbox
