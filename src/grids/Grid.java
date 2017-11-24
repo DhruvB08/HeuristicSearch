@@ -143,6 +143,12 @@ public class Grid {
 		newRiver.add(start);
 		Cell prevCell = start;
 		
+		if (start.type.equals(CellType.UNBLOCKED)) {
+			start.convertTo(CellType.RIVER_UNBLOCKED);
+		} else {
+			start.convertTo(CellType.RIVER_HARD);
+		}
+		
 		while (true) {
 			int newX = prevCell.x;
 			int newY = prevCell.y;
