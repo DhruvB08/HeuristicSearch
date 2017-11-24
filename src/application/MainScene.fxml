@@ -48,15 +48,15 @@
       <TextArea fx:id="solutionBox" layoutX="938.0" layoutY="295.0" prefHeight="169.0" prefWidth="220.0" />
       <Text layoutX="840.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="x co-ord:" />
       <Text layoutX="840.0" layoutY="534.0" strokeType="OUTSIDE" strokeWidth="0.0" text="y co-ord:" />
-      <TextField layoutX="898.0" layoutY="492.0" prefHeight="25.0" prefWidth="48.0" />
-      <TextField layoutX="898.0" layoutY="517.0" prefHeight="25.0" prefWidth="48.0" />
-      <Button layoutX="850.0" layoutY="548.0" mnemonicParsing="false" text="Get Cell Info" />
+      <TextField layoutX="898.0" layoutY="492.0" prefHeight="25.0" prefWidth="48.0" fx:id="xbox" />
+      <TextField fx:id="ybox" layoutX="898.0" layoutY="517.0" prefHeight="25.0" prefWidth="48.0" />
+      <Button layoutX="850.0" layoutY="548.0" mnemonicParsing="false" onAction="#cellInfo" text="Get Cell Info" />
       <Text layoutX="975.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="g-value:" />
       <Text layoutX="975.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="h-value:" />
       <Text layoutX="978.0" layoutY="565.0" strokeType="OUTSIDE" strokeWidth="0.0" text="f-value:" />
-      <TextField editable="false" layoutX="1033.0" layoutY="492.0" prefHeight="25.0" prefWidth="105.0" />
-      <TextField editable="false" layoutX="1033.0" layoutY="520.0" prefHeight="25.0" prefWidth="105.0" />
-      <TextField editable="false" layoutX="1033.0" layoutY="548.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="gdisplay" editable="false" layoutX="1033.0" layoutY="492.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="hdisplay" editable="false" layoutX="1033.0" layoutY="520.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="fdisplay" editable="false" layoutX="1033.0" layoutY="548.0" prefHeight="25.0" prefWidth="105.0" />
       <Button layoutX="838.0" layoutY="628.0" mnemonicParsing="false" onAction="#genPuzzles" prefHeight="25.0" prefWidth="147.0" text="Generate Puzzles" />
       <Button layoutX="838.0" layoutY="665.0" mnemonicParsing="false" onAction="#getStats" prefHeight="25.0" prefWidth="147.0" text="Get Statistics" />
       <Button layoutX="838.0" layoutY="700.0" mnemonicParsing="false" onAction="#importFile" prefHeight="25.0" prefWidth="113.0" text="Import from file" />

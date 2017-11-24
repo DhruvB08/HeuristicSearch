@@ -7,11 +7,13 @@ import java.util.List;
 import grids.Cell;
 import grids.Grid;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import solver.AStar;
 import solver.AbstractHeuristic;
@@ -36,6 +38,11 @@ public class MainController {
 	@FXML TextField weight2;
 	@FXML TextField importName;
 	@FXML TextField exportName;
+	@FXML TextField gdisplay;
+	@FXML TextField hdisplay;
+	@FXML TextField fdisplay;
+	@FXML TextField xbox;
+	@FXML TextField ybox;
 	
 	//onclick for previous grid
 	public void prevGrid(ActionEvent event) {
@@ -78,13 +85,32 @@ public class MainController {
 		
 		for (int i = 0; i < currGrid.grid.length; i++) {
 			for (int j = 0; j < currGrid.grid[0].length; j++) {
-				gridPaneView.getChildren().add(currGrid.grid[i][j].rect);
+				Cell curr = currGrid.grid[i][j];
+				gridPaneView.getChildren().add(curr.rect);
+				curr.rect.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent arg) {
+						showCellInfo(curr);
+					}
+				});
 			}
 		}
 		
 		currGrid.showGrid();
 		gridIndex.setText(Integer.toString(index));
 		gridPane.setContent(gridPaneView);;
+	}
+	
+	private void showCellInfo(Cell cell) {
+		searchAlgo.grid = currGrid.grid;
+		searchAlgo.solve(currGrid.start, cell);
+		float g = cell.gvals[0];
+		float h = searchAlgo.heuristicValue(cell, currGrid.end, searchAlgo.heuristic);
+		float f = g + h;
+		
+		gdisplay.setText(Float.toString(g));
+		hdisplay.setText(Float.toString(h));
+		fdisplay.setText(Float.toString(f));
 	}
 	
 	//onclicks for each menuitem to select search algorithm
@@ -143,6 +169,11 @@ public class MainController {
 		//looks at text in textboxes for x/y coords
 		//uses selected search algorithm and heuristic
 		//displays f/g/h values in relevant textboxes
+	public void cellInfo(ActionEvent event) {
+		int x = Integer.parseInt(xbox.getText());
+		int y = Integer.parseInt(ybox.getText());
+		showCellInfo(currGrid.grid[x][y]);
+	}
 	
 	//onclick for solve button
 		//uses selected search algorithm and heuristic
