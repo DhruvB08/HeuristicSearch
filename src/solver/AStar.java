@@ -1,6 +1,38 @@
 package solver;
 
+import java.util.ArrayList;
+import grids.Cell;
+
 public class AStar extends AbstractHeuristic {
+
+	@Override
+	public ArrayList<Cell> solve(Cell start, Cell end) {
+		for (int i = 0; i < 120; i++) {
+			for (int j = 0; j < 160; j++) {
+				grid[i][j].gvals[0] = Integer.MAX_VALUE;
+				grid[i][j].fvals[0] = Integer.MAX_VALUE;
+				grid[i][j].parents[0] = null;
+			}
+		}
+		
+		start.gvals[0] = 0;
+		fringes[0] = new Fringe(0);
+		visited.get(0).clear();
+		start.fvals[0] = start.gvals[0] + heuristicValue(start, end, heuristic);
+		fringes[0].insert(start);
+		
+		while (fringes[0].heapSize > 0) {
+			Cell cell = fringes[0].peek();
+			if (cell == end) {
+				return getPath(cell, 0);
+			} 
+			else {
+				expandCell(cell, 0, heuristic, end);
+			}
+		}
+		
+		return null;
+	}
 	
 	//implementation of solve method
 	/*

@@ -4,12 +4,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Cell {
-	int x, y;
+	public int x;
+	public int y;
 	CellType type;
 	public Rectangle rect;			//create 1px black border on each rectangle
-	float[] gvals;
-	float[] fvals;
-	Cell[] parents;
+	public float[] gvals;
+	public float[] fvals;
+	public Cell[] parents;
 	
 	//create enums to describe each square type
 	public enum CellType {
@@ -24,12 +25,18 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 		type = CellType.UNBLOCKED;
+		gvals = new float[5];
+		fvals = new float[5];
+		parents = new Cell[5];
 	}
 	
 	public Cell(int x, int y, CellType type) {
 		this.x = x;
 		this.y = y;
 		this.convertTo(type);
+		gvals = new float[5];
+		fvals = new float[5];
+		parents = new Cell[5];
 	}
 	
 	public Cell(Cell other) {
@@ -40,6 +47,9 @@ public class Cell {
 		this.rect.setFill(other.rect.getFill());
 		this.rect.setX(other.rect.getX());
 		this.rect.setY(other.rect.getY());
+		gvals = new float[5];
+		fvals = new float[5];
+		parents = new Cell[5];
 	}
 	
 	public void convertTo(CellType other) {
@@ -111,7 +121,7 @@ public class Cell {
 	 */
 	public float costTo(Cell other) {
 		if (isBlocked() || other.isBlocked()) {
-			return 0;
+			return 50;
 		}
 		
 		float res1 = 1;
