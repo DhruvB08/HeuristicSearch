@@ -233,6 +233,7 @@ public class MainController {
 	public void importFile(ActionEvent event) {
 		String filename = importName.getText();
 		currGrid.createFromFile(filename);
+		displayGrid(Integer.parseInt(gridIndex.getText()));		
 	}
 	
 	//onclick for get stats
