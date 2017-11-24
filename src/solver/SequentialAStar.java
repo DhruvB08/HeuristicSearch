@@ -17,7 +17,7 @@ public class SequentialAStar extends AbstractHeuristic {
 	@Override
 	public ArrayList<Cell> solve(Cell start, Cell end) {
 		for (int i = 0; i < 5; i++) {
-			fringes[i] = new Fringe(i);
+			fringes[i] = new Fringe(i, start);
 			visited.get(i).clear();
 			
 			for (int j = 0; j < Grid.ROWS; j++) {
