@@ -25,6 +25,8 @@ public class Grid {
 		while (!addRivers()) {
 			eraseRivers();
 		}
+		
+		addBlockedCells();
 	}
 	
 	//create whole grid method
@@ -367,6 +369,68 @@ public class Grid {
 	 place goal cell there
 	 if distance between start and goal is less than 100, select new position for goal
 	 */
+	public void addStartEnd() {
+		Cell start = cornerRegion();
+		if (start.type.equals(CellType.HARD) || start.type.equals(CellType.RIVER_HARD)) {
+			start.convertTo(CellType.START_HARD);
+		}
+		else {
+			start.convertTo(CellType.START_UNBLOCKED);
+		}
+		
+		double dist = 0;
+		Cell goal = null;
+		while (dist <= 100) {
+			goal = cornerRegion();
+			double rise = Math.abs(start.x - goal.x);
+			double run = Math.abs(start.y - goal.y);
+			dist = Math.sqrt((rise * rise) + (run * run));
+		}
+		
+		if (goal.type.equals(CellType.HARD) || goal.type.equals(CellType.RIVER_HARD)) {
+			goal.convertTo(CellType.END_HARD);
+		}
+		else {
+			goal.convertTo(CellType.END_UNBLOCKED);
+		}
+	}
+	
+	//get a random cell from one of the 20x20 corner regions
+	private Cell cornerRegion() {
+		Random random = new Random();
+		int ymin = 0, ymax = 0;
+		int xmax = 0, xmin = 0;
+		double res = random.nextDouble();
+		
+		if (res <= 0.25) {
+			ymin = 0;
+			ymax = 20;
+			xmin = 0;
+			xmax = 20;
+		}
+		else if (res <= 0.5) {
+			ymin = 0;
+			ymax = 20;
+			xmin = ROWS - 20;
+			xmax = ROWS;
+		}
+		else if (res <= 0.5) {
+			ymin = COLUMNS - 20;
+			ymax = COLUMNS;
+			xmin = 0;
+			xmax = 20;
+		}
+		else {
+			ymin = COLUMNS - 20;
+			ymax = COLUMNS;
+			xmin = ROWS - 20;
+			xmax = ROWS;
+		}
+		
+		int x = random.nextInt(xmax - xmin) + xmin;
+		int y = random.nextInt(ymax - ymin) + ymin;
+		return grid[x][y];
+	}
 	
 	//create a grid from a file
 	/*
