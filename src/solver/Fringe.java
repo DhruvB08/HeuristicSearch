@@ -17,6 +17,10 @@ public class Fringe {
 		minHeap = new Cell[120 * 160];
 		heapSize = 0;
 		num = n;
+		
+		for (int i = 0; i < minHeap.length; i++) {
+			minHeap[i] = new Cell();
+		}
 	}
 	
 	//get parent index of given index
@@ -99,6 +103,10 @@ public class Fringe {
 		int min;
 		Cell temp;
 		
+		if (rightChild > heapSize || leftChild > heapSize) {
+			return;
+		}
+		
 		if (rightChild >= heapSize) {
 			if (leftChild >= heapSize) {
 				return;
@@ -108,7 +116,7 @@ public class Fringe {
 			}
 		}
 		else {
-			if (minHeap[leftChild].fvals[num] <= minHeap[rightChild].fvals[num]) {
+			if (minHeap[leftChild].fvals[num] < minHeap[rightChild].fvals[num]) {
 				min = leftChild;
 			}
 			else {

@@ -1,12 +1,24 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import grids.Cell;
 import grids.Grid;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import solver.AStar;
 import solver.AbstractHeuristic;
+import solver.AbstractHeuristic.Heuristic;
+import solver.SequentialAStar;
+import solver.UniformCost;
+import solver.WeightedAStar;
 
 public class MainController {
 
@@ -16,7 +28,14 @@ public class MainController {
 	
 	@FXML Pane gridPaneView;
 	@FXML ScrollPane gridPane;
+	@FXML MenuButton searchAlgoMenu;
+	@FXML MenuButton heuristicMenu;
+	@FXML TextArea solutionBox;
 	@FXML TextField gridIndex;
+	@FXML TextField weight1;
+	@FXML TextField weight2;
+	@FXML TextField importName;
+	@FXML TextField exportName;
 	
 	//onclick for previous grid
 	public void prevGrid(ActionEvent event) {
@@ -70,9 +89,55 @@ public class MainController {
 	
 	//onclicks for each menuitem to select search algorithm
 		//looks at text in textbox for weight
+	public void setUniform(ActionEvent event) {
+		searchAlgo = new UniformCost();
+		searchAlgoMenu.setText("Uniform Cost");
+	}
+	
+	public void setAStar(ActionEvent event) {
+		searchAlgo = new AStar(searchAlgo.heuristic);
+		searchAlgoMenu.setText("A*");
+	}
+	
+	public void setWeightedA(ActionEvent event) {
+		double w = Double.parseDouble(weight1.getText());
+		searchAlgo = new WeightedAStar(w, searchAlgo.heuristic);
+		searchAlgoMenu.setText("Weighted A*");
+	}
+	
+	public void setSequential(ActionEvent event) {
+		double w1 = Double.parseDouble(weight1.getText());
+		double w2 = Double.parseDouble(weight2.getText());
+		searchAlgo = new SequentialAStar(w1, w2, searchAlgo.heuristic);
+		searchAlgoMenu.setText("Sequential A*");
+	}
 	
 	//onclicks for each menuitem to select heuristic
 		//sets the heuristicInUse field in AbstractHeuristic
+	public void setHminDist(ActionEvent event) {
+		searchAlgo.heuristic = Heuristic.MINDISTANCE;
+		heuristicMenu.setText("Min Distance");
+	}
+	
+	public void setH2Moves(ActionEvent event) {
+		searchAlgo.heuristic = Heuristic.TWOMOVES;
+		heuristicMenu.setText("Two Moves");
+	}
+	
+	public void setHAvoidHard(ActionEvent event) {
+		searchAlgo.heuristic = Heuristic.AVOIDHARD;
+		heuristicMenu.setText("Avoid Hard");
+	}
+	
+	public void setHRivers(ActionEvent event) {
+		searchAlgo.heuristic = Heuristic.GOFORRIVER;
+		heuristicMenu.setText("Go for rivers");
+	}
+	
+	public void setHNormalCost(ActionEvent event) {
+		searchAlgo.heuristic = Heuristic.NORMALCOST;
+		heuristicMenu.setText("Normal Cost");
+	}
 	
 	//onclick for displaying cell info
 		//looks at text in textboxes for x/y coords
@@ -82,29 +147,61 @@ public class MainController {
 	//onclick for solve button
 		//uses selected search algorithm and heuristic
 		//displays solution path on textarea
+	public void solvePuzzle(ActionEvent event) {
+		solutionBox.clear();
+		searchAlgo.grid = currGrid.grid;
+		ArrayList<Cell> sol = searchAlgo.solve(currGrid.start, currGrid.end);
+		
+		if (sol == null) {
+			solutionBox.appendText("no solution\n");
+			return;
+		}
+		
+		for (int i = 0; i < sol.size(); i++) {
+			solutionBox.appendText(sol.get(i).toString() + "\n");
+		}
+	}
 	
 	//onclick for generate puzzles button
 	public void genPuzzles(ActionEvent event) {
 		grids = new Grid[50];
+		AbstractHeuristic tempSolver = new AStar(Heuristic.MINDISTANCE);
 		
 		for (int i = 0; i < 5; i++) {
 			Grid temp = new Grid();
 			
 			for (int j = 0; j < 10; j++) {
-				grids[i * 10 + j] = new Grid(temp);
+				Grid temp2 = new Grid(temp);
+				tempSolver.grid = temp2.grid;
+				
+				while (tempSolver.solve(temp2.start, temp2.end) == null) {
+					temp2 = new Grid(temp);
+					tempSolver.grid = temp2.grid;
+				}
+				
+				grids[i * 10 + j] = temp2;
 			}
 		}
 		
+		searchAlgo = tempSolver;
 		displayGrid(0);
 	}
 	
 	//onclick for export puzzle
 		//finds filename from associated textbox
 		//calls translate to file method on current grid
+	public void export(ActionEvent event) {
+		String filename = exportName.getText();
+		currGrid.writeToFile(filename);
+	}
 	
 	//onclick for import puzzle
 		//finds filename from associated textbox
 		//calls translate from file method on current grid
+	public void importFile(ActionEvent event) {
+		String filename = importName.getText();
+		currGrid.createFromFile(filename);
+	}
 	
 	//onclick for get stats
 		//use currently selected AbstractHeuristic with associated heuristic
@@ -114,4 +211,33 @@ public class MainController {
 			//add results to each counter
 		//divide value in each counter by 50 (for average)
 		//display search algorithm/heuristic and results in console
+	public void getStats(ActionEvent event) {
+		long runTime = 0;
+		long pathLength = 0;
+		long nodesExpanded = 0;
+		long solved = 0;
+		
+		for (int i = 0; i < grids.length; i++) {
+			long startTime = Calendar.getInstance().getTimeInMillis();
+			searchAlgo.grid = grids[i].grid;
+			List<Cell> res = searchAlgo.solve(grids[i].start, grids[i].end);
+			long endTime = Calendar.getInstance().getTimeInMillis();
+			
+			if (res != null) {
+				runTime += (endTime - startTime);
+				nodesExpanded += searchAlgo.nodesExpanded();
+				solved++;
+				pathLength += res.size();
+			}
+		}
+		
+		System.out.println("Search algorithm used: " + searchAlgo.getClass().getName());
+		System.out.println("Heuristic used: " + searchAlgo.heuristic);
+		System.out.println("Weight1: " + searchAlgo.weight1 + ", Weight2: " + searchAlgo.weight2);
+		System.out.println("Average runtime: " + runTime/solved);
+		System.out.println("Average solution length: " + pathLength/solved);
+		System.out.println("Average nodes expanded: " + nodesExpanded/solved);
+		System.out.println("solved puzzles: " + solved);
+		System.out.println("");
+	}
 }

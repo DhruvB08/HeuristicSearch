@@ -1,6 +1,61 @@
 package solver;
 
-public class SequentialAStar {
+import java.util.ArrayList;
+
+import grids.Cell;
+import grids.Grid;
+
+public class SequentialAStar extends AbstractHeuristic {
+
+	public SequentialAStar(double w1, double w2, Heuristic h) {
+		super();
+		weight1 = w1;
+		weight2 = w2;
+		heuristic = h;
+	}
+	
+	@Override
+	public ArrayList<Cell> solve(Cell start, Cell end) {
+		for (int i = 0; i < 5; i++) {
+			fringes[i] = new Fringe(i);
+			visited.get(i).clear();
+			
+			for (int j = 0; j < Grid.ROWS; j++) {
+				for (int k = 0; k < Grid.COLUMNS; k++) {
+					grid[j][k].gvals[i] = Integer.MAX_VALUE;
+					grid[j][k].fvals[i] = Integer.MAX_VALUE;
+					grid[j][k].parents[i] = null;
+				}
+			}
+			
+			start.gvals[i] = 0;
+			start.fvals[i] = (float) (weight1 * heuristicValue(start, end, heuristics[i]));
+			fringes[i].insert(start);
+		}
+		
+		while (fringes[0].peek().fvals[0] < Integer.MAX_VALUE) {
+			for (int i = 1; i < 5; i++) {
+				if (fringes[i].peek().fvals[i] < weight2 * fringes[0].peek().fvals[0]) {
+					if (end == fringes[i].peek()) {
+						return getPath(end, i);
+					}
+					else {
+						expandCell(fringes[i].peek(), i, heuristics[i], end);
+					}
+				}
+				else {
+					if (end == fringes[0].peek()) {
+						return getPath(end, i);
+					}
+					else {
+						expandCell(fringes[0].peek(), 0, heuristics[0], end);
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
 
 	//implementation of solve method
 	/*

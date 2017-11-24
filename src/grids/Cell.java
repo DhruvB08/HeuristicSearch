@@ -19,7 +19,12 @@ public class Cell {
 	}
 	
 	//square constructors using either coords or enum type
-	public Cell() {}
+	public Cell() {
+		type = CellType.UNBLOCKED;
+		gvals = new float[5];
+		fvals = new float[5];
+		parents = new Cell[5];
+	}
 	
 	public Cell(int x, int y) {
 		this.x = x;
@@ -185,7 +190,7 @@ public class Cell {
 	//print this cell as a string
 	@Override
 	public String toString() {
-		return ("x: " + this.x + ", y: " + this.y + ", type: " + this.type);
+		return ("x: " + this.y + ", y: " + this.x + ", type: " + this.type);
 	}
 	
 	//add equals method to check if two cells equal

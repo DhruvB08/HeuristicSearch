@@ -13,6 +13,8 @@ public abstract class AbstractHeuristic {
 	public Fringe[] fringes;					//Fringe[] field
 	public ArrayList<HashSet<Cell>> visited;	//hashset[] for expanded vertices
 	public Heuristic[] heuristics;				//Heuristic[] for different heuristics
+	public double weight1;
+	public double weight2;
 	
 	//enums for each of 5 heuristics
 	public enum Heuristic {
@@ -37,11 +39,22 @@ public abstract class AbstractHeuristic {
 		heuristics[2] = Heuristic.AVOIDHARD;
 		heuristics[3] = Heuristic.GOFORRIVER;
 		heuristics[4] = Heuristic.NORMALCOST;
+		
+		weight1 = 0;
+		weight2 = 0;
 	}
 	
 	//number of nodes expanded
 	public int nodesExpanded() {
-		return visited.get(0).size();
+		int res = 0;
+		
+		for (int i = 0; i < visited.size(); i++) {
+			if (visited.get(i) != null) {
+				res += visited.get(i).size();
+			}
+		}
+		
+		return res;
 	}
 	
 	//abstract solve method
@@ -267,11 +280,14 @@ public abstract class AbstractHeuristic {
 			if (g2 >= c.gvals[index]) {
 				continue;
 			}
+			if (visited.get(index).contains(c)) {
+				continue;
+			}
 			
 			c.gvals[index] = g2;
 			c.parents[index] = given;
 			fringes[index].remove(c);
-			c.fvals[index] = c.gvals[index] + heuristicValue(c, end, h);
+			c.fvals[index] = (float) (c.gvals[index] + weight1 * heuristicValue(c, end, h));
 			fringes[index].insert(c);
 		}
 		
@@ -291,6 +307,10 @@ public abstract class AbstractHeuristic {
 				int xVal = curr.x + i;
 				int yVal = curr.y + j;
 				if (xVal < 0 || xVal > 119 || yVal < 0 || yVal > 159) {
+					continue;
+				}
+				
+				if (grid[xVal][yVal].isBlocked()) {
 					continue;
 				}
 				

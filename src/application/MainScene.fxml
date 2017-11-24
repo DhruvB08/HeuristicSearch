@@ -18,12 +18,12 @@
             <Font size="21.0" />
          </font>
       </Text>
-      <MenuButton layoutX="842.0" layoutY="110.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
+      <MenuButton fx:id="searchAlgoMenu" layoutX="842.0" layoutY="110.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+          <MenuItem mnemonicParsing="false" onAction="#setUniform" text="Uniform Cost" />
+          <MenuItem mnemonicParsing="false" onAction="#setAStar" text="A*" />
+            <MenuItem mnemonicParsing="false" onAction="#setWeightedA" text="Weighted A*" />
+            <MenuItem mnemonicParsing="false" onAction="#setSequential" text="Sequential A*" />
         </items>
       </MenuButton>
       <Text layoutX="837.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Heuristic:">
@@ -32,20 +32,20 @@
          </font>
       </Text>
       <Text layoutX="842.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="w1:" />
-      <TextField layoutX="864.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
+      <TextField fx:id="weight1" layoutX="864.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
       <Text layoutX="949.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="w2:" />
-      <TextField layoutX="972.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
-      <MenuButton layoutX="839.0" layoutY="244.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
+      <TextField fx:id="weight2" layoutX="972.0" layoutY="146.0" prefHeight="25.0" prefWidth="48.0" />
+      <MenuButton fx:id="heuristicMenu" layoutX="839.0" layoutY="244.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-            <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+          <MenuItem mnemonicParsing="false" onAction="#setHminDist" text="Min Distance" />
+          <MenuItem mnemonicParsing="false" onAction="#setH2Moves" text="Two Moves" />
+            <MenuItem mnemonicParsing="false" onAction="#setHAvoidHard" text="Avoid Hard" />
+            <MenuItem mnemonicParsing="false" onAction="#setHRivers" text="Go For River" />
+            <MenuItem mnemonicParsing="false" onAction="#setHNormalCost" text="Normal Cost" />
         </items>
       </MenuButton>
-      <Button layoutX="842.0" layoutY="295.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="88.0" text="Find Solution" />
-      <TextArea layoutX="938.0" layoutY="295.0" prefHeight="169.0" prefWidth="220.0" />
+      <Button layoutX="842.0" layoutY="295.0" mnemonicParsing="false" onAction="#solvePuzzle" prefHeight="63.0" prefWidth="88.0" text="Find Solution" />
+      <TextArea fx:id="solutionBox" layoutX="938.0" layoutY="295.0" prefHeight="169.0" prefWidth="220.0" />
       <Text layoutX="840.0" layoutY="509.0" strokeType="OUTSIDE" strokeWidth="0.0" text="x co-ord:" />
       <Text layoutX="840.0" layoutY="534.0" strokeType="OUTSIDE" strokeWidth="0.0" text="y co-ord:" />
       <TextField layoutX="898.0" layoutY="492.0" prefHeight="25.0" prefWidth="48.0" />
@@ -58,13 +58,13 @@
       <TextField editable="false" layoutX="1033.0" layoutY="520.0" prefHeight="25.0" prefWidth="105.0" />
       <TextField editable="false" layoutX="1033.0" layoutY="548.0" prefHeight="25.0" prefWidth="105.0" />
       <Button layoutX="838.0" layoutY="628.0" mnemonicParsing="false" onAction="#genPuzzles" prefHeight="25.0" prefWidth="147.0" text="Generate Puzzles" />
-      <Button layoutX="838.0" layoutY="665.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="147.0" text="Get Statistics" />
-      <Button layoutX="838.0" layoutY="700.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Import from file" />
-      <Button layoutX="838.0" layoutY="735.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0" text="Export to file" />
+      <Button layoutX="838.0" layoutY="665.0" mnemonicParsing="false" onAction="#getStats" prefHeight="25.0" prefWidth="147.0" text="Get Statistics" />
+      <Button layoutX="838.0" layoutY="700.0" mnemonicParsing="false" onAction="#importFile" prefHeight="25.0" prefWidth="113.0" text="Import from file" />
+      <Button layoutX="838.0" layoutY="735.0" mnemonicParsing="false" onAction="#export" prefHeight="25.0" prefWidth="113.0" text="Export to file" />
       <Text layoutX="975.0" layoutY="717.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" />
-      <TextField layoutX="1033.0" layoutY="700.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="importName" layoutX="1033.0" layoutY="700.0" prefHeight="25.0" prefWidth="113.0" />
       <Text layoutX="975.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" />
-      <TextField layoutX="1033.0" layoutY="735.0" prefHeight="25.0" prefWidth="113.0" />
+      <TextField fx:id="exportName" layoutX="1033.0" layoutY="735.0" prefHeight="25.0" prefWidth="113.0" />
       <ScrollPane fx:id="gridPane" layoutX="14.0" layoutY="14.0" prefHeight="804.0" prefWidth="808.0" />
    </children>
 </AnchorPane>

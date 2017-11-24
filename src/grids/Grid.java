@@ -1,5 +1,9 @@
 package grids;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +19,8 @@ public class Grid {
 	public Cell[][] grid;
 	public Cell[] hardCenters;
 	public List<List<Cell>> rivers;
+	public Cell start;
+	public Cell end;
 	
 	//blank grid constructor, wont add start/end cells
 	public Grid() {
@@ -31,45 +37,24 @@ public class Grid {
 	
 	//grid constructor using grid
 	public Grid(Grid other) {
-		grid = copyGrid(other.grid);
-		hardCenters = hardCenters(other.hardCenters);
-		rivers = copyRivers(other.rivers);
-		this.addStartEnd();
-	}
-	
-	//make a copy of the rivers
-	private List<List<Cell>> copyRivers(List<List<Cell>> other) {
-		List<List<Cell>> copy = new ArrayList<List<Cell>>();
-		
-		for (int i = 0; i < other.size(); i++) {
-			copy.add(new ArrayList<Cell>(other.get(i)));
-		}
-		
-		return copy;
-	}
-	
-	//create copy of centers
-	private Cell[] hardCenters(Cell[] other) {
-		Cell[] copy = new Cell[other.length];
-		
-		for (int i = 0; i < copy.length; i++) {
-			copy[i] = new Cell(other[i]);
-		}
-		
-		return copy;
-	}
-	
-	//create another grid and return it
-	private Cell[][] copyGrid(Cell[][] copy) {
-		Cell[][] res = new Cell[copy.length][copy[0].length];
-		
-		for (int i = 0; i < res.length; i++) {
-			for (int j = 0; j < res[0].length; j++) {
-				res[i][j] = new Cell(copy[i][j]);
+		grid = new Cell[ROWS][COLUMNS];
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMNS; j++) {
+				grid[i][j] = new Cell(other.grid[i][j]);
 			}
 		}
 		
-		return res;
+		hardCenters = new Cell[other.hardCenters.length];
+		for (int i = 0; i < hardCenters.length; i++) {
+			hardCenters[i] = new Cell(other.hardCenters[i]);
+		}
+		
+		rivers = new ArrayList<List<Cell>>();
+		for (int i = 0; i < other.rivers.size(); i++) {
+			rivers.add(new ArrayList<Cell>(other.rivers.get(i)));
+		}
+		
+		this.addStartEnd();
 	}
 	
 	//create whole grid method
@@ -413,7 +398,24 @@ public class Grid {
 	 if distance between start and goal is less than 100, select new position for goal
 	 */
 	public void addStartEnd() {
+		if (this.start != null) {
+			if (this.start.type.equals(CellType.START_HARD)) {
+				this.start.convertTo(CellType.HARD);
+			} else {
+				this.start.convertTo(CellType.UNBLOCKED);
+			}
+		}
+		
+		if (this.end != null) {
+			if (this.end.type.equals(CellType.END_HARD)) {
+				this.end.convertTo(CellType.HARD);
+			} else {
+				this.end.convertTo(CellType.UNBLOCKED);
+			}
+		}
+		
 		Cell start = cornerRegion();
+		this.start = start;
 		if (start.type.equals(CellType.HARD) || start.type.equals(CellType.RIVER_HARD)) {
 			start.convertTo(CellType.START_HARD);
 		}
@@ -436,6 +438,7 @@ public class Grid {
 		else {
 			goal.convertTo(CellType.END_UNBLOCKED);
 		}
+		this.end = goal;
 	}
 	
 	//get a random cell from one of the 20x20 corner regions
@@ -488,12 +491,143 @@ public class Grid {
 		 – Use ’a’ to indicate a regular unblocked cell with a highway
 		 – Use ’b’ to indicate a hard to traverse cell with a highway
 	 */
+	public void createFromFile(String filename) {
+		try {
+			String line = null;
+			FileReader reader = new FileReader(filename);
+			BufferedReader reader2 = new BufferedReader(reader);
+			
+			int i = 1;
+			int startX = 0, startY = 0;
+			int goalX = 0, goalY = 0;
+			while ((line = reader2.readLine()) != null) {
+				if (i == 1) {
+					String[] temp = line.split(" ");
+					startX = Integer.parseInt(temp[0]);
+					startY = Integer.parseInt(temp[1]);
+				}
+				else if (i == 2) {
+					String[] temp = line.split(" ");
+					goalX = Integer.parseInt(temp[0]);
+					goalY = Integer.parseInt(temp[1]);
+				}
+				else if (i < 11) {
+					String[] temp = line.split(" ");
+					hardCenters[i - 3] = new Cell(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
+				}
+				else {
+					String[] temp = line.split(" ");
+					
+					for (int j = 0; j < temp.length; j++) {
+						switch (temp[j]) {
+						case "0":
+							grid[i - 11][j].convertTo(CellType.BLOCKED);
+							break;
+						case "1":
+							grid[i - 11][j].convertTo(CellType.UNBLOCKED);
+							break;
+						case "2":
+							grid[i - 11][j].convertTo(CellType.HARD);
+							break;
+						case "a":
+							grid[i - 11][j].convertTo(CellType.RIVER_UNBLOCKED);
+							break;
+						case "b":
+							grid[i - 11][j].convertTo(CellType.RIVER_HARD);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				
+				i++;
+			}
+			
+			this.start = grid[startX][startY];
+			if (grid[startX][startY].type.equals(CellType.UNBLOCKED) || grid[startX][startY].type.equals(CellType.RIVER_UNBLOCKED)) {
+				grid[startX][startY].convertTo(CellType.START_UNBLOCKED);
+			} else {
+				grid[startX][startY].convertTo(CellType.START_HARD);
+			}
+			
+			this.end = grid[goalX][goalY];
+			if (grid[goalX][goalY].type.equals(CellType.UNBLOCKED) || grid[goalX][goalY].type.equals(CellType.RIVER_UNBLOCKED)) {
+				grid[goalX][goalY].convertTo(CellType.END_UNBLOCKED);
+			} else {
+				grid[goalX][goalY].convertTo(CellType.END_HARD);
+			}
+			
+			reader2.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	//translate this grid into a file
 	/*
 	 given the name of what file to output as, create the file and write into it
 	 use same format as above to write into file
 	 */
+	public void writeToFile(String filename) {
+		try {
+			FileWriter writer = new FileWriter(filename);
+			BufferedWriter writer2 = new BufferedWriter(writer);
+			
+			writer2.write(start.x + " " + start.y + "\n");
+			writer2.write(end.x + " " + end.y + "\n");
+			
+			for (int i = 0; i < hardCenters.length; i++) {
+				writer2.write(hardCenters[i].x + " " + hardCenters[i].y + "\n");
+			}
+			
+			for (int i = 0; i < grid.length; i++) {
+				for (int j = 0; j < grid[0].length; j++) {
+					char res = '1';
+					
+					switch (grid[i][j].type) {
+					case BLOCKED:
+						res = '0';
+						break;
+					case END_HARD:
+						res = '2';
+						break;
+					case END_UNBLOCKED:
+						res = '1';
+						break;
+					case HARD:
+						res = '2';
+						break;
+					case RIVER_HARD:
+						res = 'b';
+						break;
+					case RIVER_UNBLOCKED:
+						res = 'a';
+						break;
+					case START_HARD:
+						res = '2';
+						break;
+					case START_UNBLOCKED:
+						res = '1';
+						break;
+					case UNBLOCKED:
+						res = '1';
+						break;
+					default:
+						break;
+					}
+					
+					writer2.write(res + " ");
+				}
+				
+				writer2.write("\n");
+			}
+			
+			writer2.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	//display grid onto screen
 	public void showGrid() {
