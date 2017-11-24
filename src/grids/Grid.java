@@ -310,17 +310,7 @@ public class Grid {
 	private void eraseRivers() {
 		for (int i = 0; i < rivers.size(); i++) {
 			List<Cell> currentRiver = rivers.get(i);
-			
-			for (int j = 0; j < currentRiver.size(); j++) {
-				Cell currCell = currentRiver.get(j);
-				
-				if (currCell.type.equals(CellType.RIVER_HARD)) {
-					currCell.convertTo(CellType.HARD);
-				}
-				else {
-					currCell.convertTo(CellType.UNBLOCKED);
-				}
-			}
+			eraseRiver(currentRiver);
 		}
 		
 		while (!rivers.isEmpty()) {
@@ -347,6 +337,27 @@ public class Grid {
 	  select randomly 20% of the total number of cells (i.e., 3,840 cells) to mark as blocked
 	  you should not mark any cell that has a highway as a blocked cell
 	 */
+	public void addBlockedCells() {
+		int numBlocked = (ROWS * COLUMNS) / 5;
+		for (int i = 0; i < numBlocked; i++) {
+			Cell picked = randomCell();
+			
+			if (!picked.isRiver() && !picked.isBlocked()) {
+				picked.convertTo(CellType.BLOCKED);
+			}
+			else {
+				i--;
+			}
+		}
+	}
+	
+	//get any random cell on the grid
+	private Cell randomCell() {
+		Random random = new Random();
+		int x = random.nextInt(ROWS);
+		int y = random.nextInt(COLUMNS);
+		return grid[x][y];
+	}
 	
 	//place start and goal vertices onto grid
 	/*
