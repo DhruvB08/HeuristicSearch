@@ -9,10 +9,10 @@
 
 <AnchorPane prefHeight="827.0" prefWidth="1167.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
    <children>
-      <Button layoutX="842.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&lt;" />
+      <Button layoutX="842.0" layoutY="28.0" mnemonicParsing="false" onAction="#prevGrid" prefHeight="25.0" prefWidth="38.0" text="&lt;" />
       <TextField fx:id="gridIndex" layoutX="894.0" layoutY="28.0" prefHeight="25.0" prefWidth="88.0" />
-      <Button layoutX="989.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Go" />
-      <Button layoutX="1088.0" layoutY="28.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="38.0" text="&gt;" />
+      <Button layoutX="989.0" layoutY="28.0" mnemonicParsing="false" onAction="#thisGrid" prefHeight="25.0" prefWidth="88.0" text="Go" />
+      <Button layoutX="1088.0" layoutY="28.0" mnemonicParsing="false" onAction="#nextGrid" prefHeight="25.0" prefWidth="38.0" text="&gt;" />
       <Text layoutX="842.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search Algorithm:" wrappingWidth="175.271484375">
          <font>
             <Font size="21.0" />

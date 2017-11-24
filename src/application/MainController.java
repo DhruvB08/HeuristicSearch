@@ -19,17 +19,36 @@ public class MainController {
 	@FXML TextField gridIndex;
 	
 	//onclick for previous grid
+	public void prevGrid(ActionEvent event) {
+		int curr = Integer.parseInt(gridIndex.getText());
+		
+		if (curr == 0) {
+			displayGrid(49);
+		}
+		else {
+			displayGrid(Math.max(0, curr - 1));
+		}
+	}
 	
 	//onclick for next grid
+	public void nextGrid(ActionEvent event) {
+		int curr = Integer.parseInt(gridIndex.getText());
+		
+		if (curr == 49) {
+			displayGrid(0);
+		}
+		else {
+			displayGrid(Math.min(curr + 1, 49));
+		}
+	}
 	
 	//onclick for specified grid
+	public void thisGrid(ActionEvent event) {
+		int selected = Integer.parseInt(gridIndex.getText());
+		displayGrid(Math.min(49, Math.max(0, selected)));
+	}
 	
 	//private method to select/display a given grid index
-		//hide current grid
-		//set grid to specified index in array
-		//show grid
-		//show index in textbox
-		//clear textareas for solution/cell info
 	private void displayGrid(int index) {
 		if (currGrid != null) {
 			currGrid.hideGrid();
@@ -65,13 +84,6 @@ public class MainController {
 		//displays solution path on textarea
 	
 	//onclick for generate puzzles button
-		//for loop from 0 -> 5
-			//create a grid with no start/goal set yet
-			//for loop from 0 -> 10
-				//assign start/end cells
-				//array[i*10 + j] = this grid
-				//add grid to pane
-		//set current grid to index 0 (make call to private method)
 	public void genPuzzles(ActionEvent event) {
 		grids = new Grid[50];
 		
