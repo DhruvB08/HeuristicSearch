@@ -14,10 +14,17 @@ public class Grid {
 	public static final int ROWS = 120;
 	public Cell[][] grid;
 	public Cell[] hardCenters;
+	public List<List<Cell>> rivers;
 	
 	//grid constructor using height/width
 	public Grid() {
 		grid = createGrid();
+		addHardCells();
+		
+		rivers = new ArrayList<List<Cell>>();
+		while (!addRivers()) {
+			eraseRivers();
+		}
 	}
 	
 	//create whole grid method
@@ -84,7 +91,7 @@ public class Grid {
 		int FAILS = 0;
 		
 		for (int j = 0; j < 4; j++) {
-			if (!addRiver()) {
+			if (!addRiver(j)) {
 				FAILS++;
 				j--;
 			}
@@ -98,54 +105,68 @@ public class Grid {
 	}
 	
 	//add one whole river
-	private boolean addRiver() {
-		List<Cell> newRiver = new ArrayList<Cell>();
+	private boolean addRiver(int numRiver) {
+		ArrayList<Cell> newRiver = new ArrayList<Cell>();
 		int countTo20 = 0;
 		Cell start = randomBoundaryCell();
-		int startX = start.x;
-		int startY = start.y;
-		Cell nextCell = grid[startX][startY];
-		String directionGoing = randomDirection();
-		// This long thing of if statements checks the 8 cases of borders
-		// if it for example wants to go left while starting at column zero, or anything similar to that
-		// this long chunk says NOPE and gives it a new starting direction... Gives less fails.
-		if(startX == 0){
-			if(startY==0){	
-				while(directionGoing.equals("UP") || directionGoing.equals("LEFT")){
-					directionGoing=randomDirection();
-				}
-			}else if(startY==159){
-				while(directionGoing.equals("UP") || directionGoing.equals("RIGHT")){
-					directionGoing=randomDirection();
-				}
-			}else{
-				while(directionGoing.equals("UP")){
-					directionGoing=randomDirection();
-				}
+		String directionGoing = firstDirection(start);
+		newRiver.add(start);
+		Cell prevCell = start;
+		
+		while (true) {
+			int newX = prevCell.x;
+			int newY = prevCell.y;
+			
+			if (directionGoing.equals("UP")) {
+				newX--;
 			}
-		}else if(startX == 119){
-			if(startY==0){	
-				while(directionGoing.equals("DOWN") || directionGoing.equals("LEFT")){
-					directionGoing=randomDirection();
-				}
-			}else if(startY==159){
-				while(directionGoing.equals("DOWN") || directionGoing.equals("RIGHT")){
-					directionGoing=randomDirection();
-				}
-			}else{
-				while(directionGoing.equals("DOWN")){
-					directionGoing=randomDirection();
-				}
+			else if (directionGoing.equals("DOWN")) {
+				newX++;
 			}
-		}else if(startY==0){
-			while(directionGoing.equals("LEFT")){
-				directionGoing=randomDirection();
+			else if (directionGoing.equals("RIGHT")) {
+				newY++;
 			}
-		}else if(startY==159){
-			while(directionGoing.equals("RIGHT")){
-				directionGoing=randomDirection();
+			else {
+				newY--;
 			}
+			
+			Cell nextCell = grid[newX][newY];
+			
+			if (nextCell.isRiver()) {
+				eraseRiver(newRiver);
+				return false;
+			}
+			
+			newRiver.add(nextCell);
+			countTo20++;
+			if (nextCell.type.equals(CellType.UNBLOCKED)) {
+				nextCell.convertTo(CellType.RIVER_UNBLOCKED);
+			}
+			else {
+				nextCell.convertTo(CellType.RIVER_HARD);
+			}
+			
+			if (nextCell.onBoundary()) {
+				break;
+			}
+			
+			if (countTo20 == 20) {
+				countTo20 = 0;
+				directionGoing = randomDirectionContinued(directionGoing);
+			}
+			
+			prevCell = nextCell;
 		}
+		
+		if (newRiver.size() > 100) {
+			rivers.add(new ArrayList<Cell>(newRiver));
+			return true;
+		}
+		
+		eraseRiver(newRiver);
+		return false;
+		
+		/*
 		do{
 			newRiver.add(nextCell);
 			if(nextCell.type.equals(CellType.UNBLOCKED)){
@@ -197,93 +218,128 @@ public class Grid {
 			System.out.println("Unsuccessful River. :(");
 			return false;
 		}
+		*/
 	}
 	
-	//pick a random cell on the boundary
+	//pick a random cell on the boundary, not in a corner
 	private Cell randomBoundaryCell() {
 		Random random = new Random();
 		int choice = random.nextInt(4);
-		int rowRandom = random.nextInt(120);
-		int columnRandom = random.nextInt(160);
+		int rowRandom = random.nextInt(ROWS);
+		int columnRandom = random.nextInt(COLUMNS);
 		int x = 0;
 		int y = 0;
+		
 		if (choice == 0) {
-			// Start at top edge
-			x = 0;
 			y = columnRandom;
+			
+			if (y == 0 || y == COLUMNS - 1) {
+				return randomBoundaryCell();
+			}
 		}
 		else if (choice == 1) {
-			// Start at right edge
 			x = rowRandom;
-			y = 159;
+			y = COLUMNS - 1;
+			
+			if (x == 0 || x == ROWS - 1) {
+				return randomBoundaryCell();
+			}
 		}
 		else if (choice == 2) {
-			// Start at bottom edge
-			x = 119;
+			x = ROWS - 1;
 			y = columnRandom;
-		}else if(choice ==3){
-			// Start at left edge
+			
+			if (y == 0 || y == COLUMNS - 1) {
+				return randomBoundaryCell();
+			}
+		} 
+		else if(choice == 3) {
 			x = rowRandom;
-			y = 0;
+			
+			if (x == 0 || x == ROWS - 1) {
+				return randomBoundaryCell();
+			}
 		}
+		
 		return grid[x][y];
 	}
 	
-	private String randomDirection() {
-		Random random = new Random();
-		int choice = random.nextInt(4);
-		
-		if (choice == 0) {
-			return "RIGHT";
+	//get the first direction to go to
+	private String firstDirection(Cell start) {
+		if (start.x == 0) {
+			return "DOWN";
 		}
-		else if (choice == 1) {
-			return "LEFT";
-		}
-		else if (choice == 2) {
+		else if (start.x == ROWS - 1) {
 			return "UP";
 		}
-		return "DOWN";
+		else if (start.y == 0) {
+			return "RIGHT";
+		}
+		
+		return "LEFT";
 	}
+	
+	//get next direction
 	private String randomDirectionContinued(String directionGoing){
 		Random random = new Random();
-		int choice = random.nextInt(10);
-		if(directionGoing.equals("RIGHT")){
-			if(choice <=5){
-				return "RIGHT";
-			}else if(choice == 6 || choice == 7){
-				return "UP";
-			}else if(choice == 8 || choice == 9){
-				return "DOWN";
-			}
+		double choice = random.nextDouble();
+		
+		//60% chance of staying same direction
+		if (choice <= 0.6) {
+			return directionGoing;
 		}
-		if(directionGoing.equals("LEFT")){
-			if(choice <=5){
-				return "LEFT";
-			}else if(choice == 6 || choice == 7){
-				return "UP";
-			}else if(choice == 8 || choice == 9){
-				return "DOWN";
-			}
-		}
-		if(directionGoing.equals("UP")){
-			if(choice <=5){
-				return "UP";
-			}else if(choice == 6 || choice == 7){
-				return "LEFT";
-			}else if(choice == 8 || choice == 9){
+		
+		//20% chance of perpendicular
+		else if (choice <= 0.8) {
+			if (directionGoing.equals("UP") || directionGoing.equals("DOWN")) {
 				return "RIGHT";
 			}
+			
+			return "UP";
 		}
-		if(directionGoing.equals("DOWN")){
-			if(choice <=5){
-				return "DOWN";
-			}else if(choice == 6 || choice == 7){
-				return "LEFT";
-			}else if(choice == 8 || choice == 9){
-				return "RIGHT";
+		
+		//20% chance of other perpendicular
+		if (directionGoing.equals("UP") || directionGoing.equals("DOWN")) {
+			return "LEFT";
+		}
+		
+		return "DOWN";
+	}
+	
+	//erase all rivers
+	private void eraseRivers() {
+		for (int i = 0; i < rivers.size(); i++) {
+			List<Cell> currentRiver = rivers.get(i);
+			
+			for (int j = 0; j < currentRiver.size(); j++) {
+				Cell currCell = currentRiver.get(j);
+				
+				if (currCell.type.equals(CellType.RIVER_HARD)) {
+					currCell.convertTo(CellType.HARD);
+				}
+				else {
+					currCell.convertTo(CellType.UNBLOCKED);
+				}
 			}
 		}
-		return null;
+		
+		while (!rivers.isEmpty()) {
+			rivers.remove(0);
+		}
+	}
+	
+	//erase given river
+	private void eraseRiver(List<Cell> river) {
+		for (int i = 0; i < river.size(); i++) {
+			Cell curr = river.get(i);
+			
+			if (curr.type.equals(CellType.RIVER_HARD)) {
+				curr.convertTo(CellType.HARD);
+			}
+			else {
+				curr.convertTo(CellType.UNBLOCKED);
+			}
+		}
 	}
 	
 	//create blocked cells method
