@@ -22,11 +22,11 @@ public class AStar extends AbstractHeuristic {
 		}
 		
 		start.gvals[0] = 0;
-		fringes[0] = new Fringe(0);
+		fringes[0] = new Fringe(0, start);
 		visited.get(0).clear();
 		start.fvals[0] = (float) (start.gvals[0] + (weight1 * heuristicValue(start, end, heuristic)));
 		fringes[0].insert(start);
-		
+
 		while (fringes[0].heapSize > 0) {
 			Cell cell = fringes[0].peek();
 			if (cell == end) {

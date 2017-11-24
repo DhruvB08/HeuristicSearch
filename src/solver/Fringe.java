@@ -23,6 +23,16 @@ public class Fringe {
 		}
 	}
 	
+	public Fringe(int n, Cell start) {
+		minHeap = new Cell[120 * 160];
+		heapSize = 0;
+		num = n;
+		
+		for (int i = 0; i < minHeap.length; i++) {
+			minHeap[i] = new Cell(start);
+		}
+	}
+	
 	//get parent index of given index
 	private int parent(int index) {
 		return index / 2;
