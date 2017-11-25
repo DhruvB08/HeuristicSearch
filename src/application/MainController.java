@@ -255,8 +255,8 @@ public class MainController {
 			searchAlgo.grid = grids[i].grid;
 			List<Cell> res = searchAlgo.solve(grids[i].start, grids[i].end);
 			long endTime = Calendar.getInstance().getTimeInMillis();
-			
-			if (res != null) {
+
+			if (res != null && res.size() != 1) {
 				runTime += (endTime - startTime);
 				nodesExpanded += searchAlgo.nodesExpanded();
 				solved++;
