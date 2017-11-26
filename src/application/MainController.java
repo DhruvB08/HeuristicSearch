@@ -256,11 +256,14 @@ public class MainController {
 			List<Cell> res = searchAlgo.solve(grids[i].start, grids[i].end);
 			long endTime = Calendar.getInstance().getTimeInMillis();
 
-			if (res != null && res.size() != 1) {
+			if (searchAlgo instanceof SequentialAStar) {
+				System.out.println("runtime: " + (endTime - startTime) + "\t pathlength: " + res.size() + " \t nodesExpanded: " + searchAlgo.nodesExpanded());
+			}
+			else if (res != null && res.size() != 1) {
 				runTime += (endTime - startTime);
 				nodesExpanded += searchAlgo.nodesExpanded();
 				solved++;
-				pathLength += res.size();
+				pathLength += getCost(res);
 			}
 		}
 		
@@ -268,9 +271,22 @@ public class MainController {
 		System.out.println("Heuristic used: " + searchAlgo.heuristic);
 		System.out.println("Weight1: " + searchAlgo.weight1 + ", Weight2: " + searchAlgo.weight2);
 		System.out.println("Average runtime: " + runTime/solved);
-		System.out.println("Average solution length: " + pathLength/solved);
+		System.out.println("Average solution cost: " + pathLength/solved);
 		System.out.println("Average nodes expanded: " + nodesExpanded/solved);
 		System.out.println("solved puzzles: " + solved);
 		System.out.println("");
+	}
+	
+	//gets cost of the solution path
+	private long getCost(List<Cell> path) {
+		long res = 0;
+		
+		for (int i = 1; i < path.size(); i++) {
+			Cell prevCell = path.get(i - 1);
+			Cell nextCell = path.get(i);
+			res += prevCell.costTo(nextCell);
+		}
+		
+		return res;
 	}
 }
