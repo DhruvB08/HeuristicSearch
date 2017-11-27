@@ -273,6 +273,7 @@ public abstract class AbstractHeuristic {
 		*/
 	public void expandCell(Cell given, int index, Heuristic h, Cell end) {
 		fringes[index].remove(given);
+		visited.get(index).add(given);
 		Set<Cell> succ = getSuccessors(given);
 		
 		for (Cell c : succ) {
@@ -290,8 +291,6 @@ public abstract class AbstractHeuristic {
 			c.fvals[index] = (float) (c.gvals[index] + weight1 * heuristicValue(c, end, h));
 			fringes[index].insert(c);
 		}
-		
-		visited.get(index).add(given);
 	}
 	
 	//get all successors of given cell

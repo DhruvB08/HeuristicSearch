@@ -51,6 +51,8 @@ public class Fringe {
 	//insert method
 		//takes square and f-value as input
 	public void insert(Cell cell) {
+		//if (heapSize < 0) System.out.println(cell + " " + heapSize);
+		//heapSize++;
 		minHeap[heapSize] = cell;
 		heapUp(heapSize);
 		heapSize++;
@@ -58,13 +60,12 @@ public class Fringe {
 	
 	//contains method
 	private int indexOf(Cell cell) {
-		int max = Math.min((heapSize + 1) * 2, minHeap.length);
-		for (int i = 0; i < max; i++) {
+		for (int i = 0; i < heapSize; i++) {
 			if (minHeap[i] == cell) {
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
 	
@@ -75,6 +76,11 @@ public class Fringe {
 			//replace found square with last square in heap
 			//move square up or down to fix heap as needed
 	public void remove(Cell cell) {
+		if (cell == minHeap[minHeap.length - 1]) {
+			heapSize--;
+			return;
+		}
+		
 		int index = indexOf(cell);
 		
 		if (index == -1) {

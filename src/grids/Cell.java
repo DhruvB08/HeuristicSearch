@@ -125,23 +125,19 @@ public class Cell {
 			return 50;
 		}
 		
-		float res1 = 1;
-		if (hardTraverse()) {
-			res1 *= 2;
-		}
-		if (x != other.x && y != other.y) {
-			res1 *= Math.sqrt(2.0);
+		float res = 1;
+		
+		if (hardTraverse() && other.hardTraverse()) {
+			res *= 2;
+		} 
+		else if (hardTraverse() || other.hardTraverse()) {
+			res *= 1.5;
 		}
 		
-		float res2 = 1;
-		if (other.hardTraverse()) {
-			res2 *= 2;
-		}
 		if (x != other.x && y != other.y) {
-			res2 *= Math.sqrt(2.0);
+			res *= Math.sqrt(2.0);
 		}
 		
-		float res = (res1 + res2) / 2;
 		if (isRiver() && other.isRiver()) {
 			return res / 4;
 		}

@@ -106,8 +106,15 @@ public class MainController {
 	}
 	
 	private void showCellInfo(Cell cell) {
-		searchAlgo.grid = currGrid.grid;
-		searchAlgo.solve(currGrid.start, cell);
+//		searchAlgo.grid = currGrid.grid;
+//		List<Cell> res = searchAlgo.solve(currGrid.start, cell);
+		if (cell.isBlocked()) {
+			gdisplay.setText("Blocked");
+			hdisplay.setText("Blocked");
+			fdisplay.setText("Blocked");
+			return;
+		}
+		
 		float g = cell.gvals[0];
 		float h = searchAlgo.heuristicValue(cell, currGrid.end, searchAlgo.heuristic);
 		float f = g + h;
@@ -218,6 +225,7 @@ public class MainController {
 		
 		solutionBox.appendText("\nRuntime: " + (endTime - startTime));
 		solutionBox.appendText("\nSolution cost: " + getCost(sol));
+		solutionBox.appendText("\nNodes Expanded: " + searchAlgo.nodesExpanded());
 	}
 	
 	//get solution path color
@@ -288,15 +296,30 @@ public class MainController {
 		//display search algorithm/heuristic and results in console
 	public void getStats(ActionEvent event) {
 		long runTime = 0;
-		long pathLength = 0;
+		float pathLength = 0;
 		long nodesExpanded = 0;
-		long solved = 0;
+		int solved = 0;
 		
+		long ArunTime = 0;
+		float ApathLen = 0;
+		long AnodesExpand = 0;
+		int Asolved = 0;
+		AbstractHeuristic base = new AStar(searchAlgo.heuristic);
+
 		for (int i = 0; i < grids.length; i++) {
 			long startTime = Calendar.getInstance().getTimeInMillis();
 			searchAlgo.grid = grids[i].grid;
 			List<Cell> res = searchAlgo.solve(grids[i].start, grids[i].end);
 			long endTime = Calendar.getInstance().getTimeInMillis();
+			
+			if (res != null) {
+				pathLength += getCost(res);
+			}
+			
+			long start2 = Calendar.getInstance().getTimeInMillis();
+			base.grid = grids[i].grid;
+			List<Cell> res2 = base.solve(grids[i].start, grids[i].end);
+			long end2 =  Calendar.getInstance().getTimeInMillis();
 
 			if (searchAlgo instanceof SequentialAStar) {
 				System.out.println("runtime: " + (endTime - startTime) + "\t path cost: " + getCost(res) + " \t nodesExpanded: " + searchAlgo.nodesExpanded());
@@ -305,8 +328,30 @@ public class MainController {
 				runTime += (endTime - startTime);
 				nodesExpanded += searchAlgo.nodesExpanded();
 				solved++;
-				pathLength += getCost(res);
+				
+				ArunTime += (end2 - start2);
+				AnodesExpand += base.nodesExpanded();
+				ApathLen += getCost(res2);
+				Asolved++;
 			}
+		}
+		
+		if (ApathLen > pathLength) {
+			float temp = ApathLen;
+			ApathLen = pathLength;
+			pathLength = temp;
+		}
+		
+		if (searchAlgo instanceof WeightedAStar || searchAlgo instanceof UniformCost) {
+			System.out.println("Search algorithm used: " + searchAlgo.getClass().getName());
+			System.out.println("Heuristic used: " + searchAlgo.heuristic);
+			System.out.println("Weight1: " + searchAlgo.weight1 + ", Weight2: " + searchAlgo.weight2);
+			System.out.println("Average runtime: " + runTime/solved + "\t \t \t AStar avg: " + ArunTime/solved);
+			System.out.println("Average solution cost: " + pathLength/solved + "\t \t AStar avg: " + ApathLen/solved);
+			System.out.println("Average nodes expanded: " + nodesExpanded/solved + "\t \t AStar avg: " + AnodesExpand/solved);
+			System.out.println("solved puzzles: " + solved + "\t \t \t AStar: " + Asolved);
+			System.out.println("");
+			return;
 		}
 		
 		System.out.println("Search algorithm used: " + searchAlgo.getClass().getName());
@@ -320,7 +365,8 @@ public class MainController {
 	}
 	
 	//gets cost of the solution path
-	private long getCost(List<Cell> path) {
+	private float getCost(List<Cell> path) {
+		/*
 		long res = 0;
 		
 		for (int i = 1; i < path.size(); i++) {
@@ -330,5 +376,8 @@ public class MainController {
 		}
 		
 		return res;
+		*/
+		
+		return path.get(path.size() - 1).gvals[0];
 	}
 }
