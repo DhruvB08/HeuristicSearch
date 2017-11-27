@@ -18,6 +18,7 @@ public class Grid {
 	public static final int ROWS = 120;
 	public Cell[][] grid;
 	public Cell[] hardCenters;
+	public static int cellSize;
 	public List<List<Cell>> rivers;
 	public Cell start;
 	public Cell end;
@@ -60,13 +61,14 @@ public class Grid {
 	//create whole grid method
 	public Cell[][] createGrid() {
 		Cell[][] grid = new Cell[ROWS][COLUMNS];
+		cellSize = 10;
 		
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLUMNS; j++) {
 				grid[i][j] = new Cell(i, j);
-				grid[i][j].rect = new Rectangle(10, 10);
-				grid[i][j].rect.setX(i * 10);
-				grid[i][j].rect.setY(j * 10);
+				grid[i][j].rect = new Rectangle(cellSize, cellSize);
+				grid[i][j].rect.setX(i * cellSize);
+				grid[i][j].rect.setY(j * cellSize);
 			}
 		}
 		
@@ -639,6 +641,8 @@ public class Grid {
 	public void showGrid() {
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLUMNS; j++) {
+				grid[i][j].rect.setY(i * cellSize);
+				grid[i][j].rect.setX(j * cellSize);
 				grid[i][j].showCell();
 			}
 		}

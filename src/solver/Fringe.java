@@ -58,7 +58,7 @@ public class Fringe {
 	
 	//contains method
 	private int indexOf(Cell cell) {
-		int max = Math.min(heapSize * 2, minHeap.length);
+		int max = Math.min((heapSize + 1) * 2, minHeap.length);
 		for (int i = 0; i < max; i++) {
 			if (minHeap[i] == cell) {
 				return i;
@@ -85,21 +85,12 @@ public class Fringe {
 		minHeap[index] = minHeap[heapSize];
 		heapSize--;
 		
-		if (index == 0 || minHeap[parent].fvals[num] < minHeap[index].fvals[num]) {
+		if (index == 0 || minHeap[index].fvals[num] > minHeap[parent].fvals[num]) {
 			heapDown(index);
-		} else {
+		} 
+		else if (minHeap[index].fvals[num] < minHeap[index].fvals[num]) {
 			heapUp(index);
 		}
-	}
-	
-	//pop method
-		//stores current min in heap
-		//replaces min with max
-		//fix heap by moving square down as needed
-	public Cell pop() {
-		Cell ret = peek();
-		remove(ret);
-		return ret;
 	}
 	
 	//peek method
@@ -139,18 +130,17 @@ public class Fringe {
 	}
 	
 	private void heapUp(int index) {
-		int parent;
-		Cell temp;
+		int parent = parent(index);
+		Cell temp = minHeap[parent];
 		
-		if (index != 0) {
-			parent = parent(index);
-			
-			if (minHeap[parent].fvals[num] > minHeap[index].fvals[num]) {
-				temp = minHeap[parent];
-				minHeap[parent] = minHeap[index];
-				minHeap[index] = temp;
-				heapUp(parent);
-			}
+		if (index == 0) {
+			return;
+		}
+		
+		if (minHeap[index].fvals[num] < minHeap[parent].fvals[num]) {
+			minHeap[parent] = minHeap[index];
+			minHeap[index] = temp;
+			heapUp(parent);
 		}
 	}
 }

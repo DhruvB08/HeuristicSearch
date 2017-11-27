@@ -15,6 +15,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import solver.AStar;
 import solver.AbstractHeuristic;
 import solver.AbstractHeuristic.Heuristic;
@@ -86,6 +89,7 @@ public class MainController {
 		for (int i = 0; i < currGrid.grid.length; i++) {
 			for (int j = 0; j < currGrid.grid[0].length; j++) {
 				Cell curr = currGrid.grid[i][j];
+				curr.rect = new Rectangle(Grid.cellSize, Grid.cellSize);
 				gridPaneView.getChildren().add(curr.rect);
 				curr.rect.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
@@ -111,6 +115,20 @@ public class MainController {
 		gdisplay.setText(Float.toString(g));
 		hdisplay.setText(Float.toString(h));
 		fdisplay.setText(Float.toString(f));
+	}
+	
+	//zoom in
+	public void zoomIn(ActionEvent event) {
+		Grid.cellSize++;
+		displayGrid(Integer.parseInt(gridIndex.getText()));
+	}
+	
+	//zoom out
+	public void zoomOut(ActionEvent event) {
+		if (Grid.cellSize != 1) {
+			Grid.cellSize--;
+			displayGrid(Integer.parseInt(gridIndex.getText()));
+		}
 	}
 	
 	//onclicks for each menuitem to select search algorithm
@@ -181,7 +199,11 @@ public class MainController {
 	public void solvePuzzle(ActionEvent event) {
 		solutionBox.clear();
 		searchAlgo.grid = currGrid.grid;
+		Paint col = getColor();
+		
+		long startTime = Calendar.getInstance().getTimeInMillis();
 		ArrayList<Cell> sol = searchAlgo.solve(currGrid.start, currGrid.end);
+		long endTime = Calendar.getInstance().getTimeInMillis();
 		
 		if (sol == null) {
 			solutionBox.appendText("no solution\n");
@@ -190,7 +212,27 @@ public class MainController {
 		
 		for (int i = 0; i < sol.size(); i++) {
 			solutionBox.appendText(sol.get(i).toString() + "\n");
+			sol.get(i).rect.setFill(col);
+			sol.get(i).rect.setVisible(true);
 		}
+		
+		solutionBox.appendText("\nRuntime: " + (endTime - startTime));
+		solutionBox.appendText("\nSolution cost: " + getCost(sol));
+	}
+	
+	//get solution path color
+	private Paint getColor() {
+		if (searchAlgo instanceof UniformCost) {
+			return Color.BROWN;
+		}
+		else if (searchAlgo instanceof WeightedAStar) {
+			return Color.ROSYBROWN;
+		}
+		else if (searchAlgo instanceof SequentialAStar) {
+			return Color.SADDLEBROWN;
+		}
+		
+		return Color.SANDYBROWN;
 	}
 	
 	//onclick for generate puzzles button
@@ -257,7 +299,7 @@ public class MainController {
 			long endTime = Calendar.getInstance().getTimeInMillis();
 
 			if (searchAlgo instanceof SequentialAStar) {
-				System.out.println("runtime: " + (endTime - startTime) + "\t pathlength: " + res.size() + " \t nodesExpanded: " + searchAlgo.nodesExpanded());
+				System.out.println("runtime: " + (endTime - startTime) + "\t path cost: " + getCost(res) + " \t nodesExpanded: " + searchAlgo.nodesExpanded());
 			}
 			else if (res != null && res.size() != 1) {
 				runTime += (endTime - startTime);

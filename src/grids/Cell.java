@@ -38,7 +38,7 @@ public class Cell {
 	public Cell(int x, int y, CellType type) {
 		this.x = x;
 		this.y = y;
-		this.convertTo(type);
+		this.type = type;
 		gvals = new float[5];
 		fvals = new float[5];
 		parents = new Cell[5];
@@ -47,11 +47,7 @@ public class Cell {
 	public Cell(Cell other) {
 		this.x = other.x;
 		this.y = other.y;
-		this.convertTo(other.type);
-		this.rect = new Rectangle(10, 10);
-		this.rect.setFill(other.rect.getFill());
-		this.rect.setX(other.rect.getX());
-		this.rect.setY(other.rect.getY());
+		this.type = other.type;
 		gvals = new float[5];
 		fvals = new float[5];
 		parents = new Cell[5];
@@ -181,6 +177,7 @@ public class Cell {
 			case UNBLOCKED:
 				this.rect.setFill(Color.WHITE);
 			default:
+				this.rect.setFill(Color.WHITE);
 				break;
 		}
 		
@@ -190,7 +187,7 @@ public class Cell {
 	//print this cell as a string
 	@Override
 	public String toString() {
-		return ("x: " + this.y + ", y: " + this.x + ", type: " + this.type);
+		return ("x: " + this.x + ", y: " + this.y + ", type: " + this.type);
 	}
 	
 	//add equals method to check if two cells equal
